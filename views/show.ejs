@@ -1,0 +1,12 @@
+<li class="item">
+  <% const CHECK = "fa-check-circle"; %>
+  <% const UNCHECK = "fa-circle-thin"; %>
+  <% const LINE_THROUGH = "line_through"; %>
+
+  <% const DONE = done ? CHECK : UNCHECK; %>
+  <% const LINE = done ? LINE_THROUGH : ""; %>
+  
+  <i class="fa <%= DONE %> co" job="complete" data-id= <%= id %> ></i>
+  <p class="text <%= LINE %>" data-id= <%= id %> > <%= name %> </p>
+  <i class="fa fa-trash-o de" job="delete" data-id= <%= id %> ></i>
+</li>

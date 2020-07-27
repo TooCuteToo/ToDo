@@ -1,0 +1,95 @@
+<script>
+  // Select elements
+  const clear = document.querySelector(".clear");
+  const dateElement = document.querySelector("#date");
+
+  const list = document.querySelector("#list");
+  const header = document.querySelector(".header");
+
+  // Classes name
+  const CHECK = "fa-check-circle";
+  const UNCHECK = "fa-circle-thin";
+  const LINE_THROUGH = "line_through";
+  
+  /* ========= Time ========= */
+
+  // Get dateformat
+  const options = {
+    weekday: "long",
+    month: "short",
+    day: "numeric",
+  };
+  
+  const today = new Date();
+  const time = new Date().getHours();
+
+  dateElement.innerHTML = today.toLocaleDateString("en-US", options);
+
+  if (time >= 0 && time < 12)
+    header.style.backgroundImage = "url(./img/morning.png)";
+  else if (time >= 12 && time < 18)
+    header.style.backgroundImage = "url(./img/afternoon.png)";
+  else if (time >= 18 && time < 21)
+    header.style.backgroundImage = "url(./img/evening.jpg)";
+  else header.style.backgroundImage = "url(./img/night.jpg)";
+
+  /* ========= Todo list function helper ========= */
+
+  // Add
+  function addToDo(toDo, done, id = 1) {
+    const DONE = done ? CHECK : UNCHECK;
+    const LINE = done ? LINE_THROUGH : "";
+
+    const item = `<li class="item">
+      <i class="fa ${DONE} co" job="complete" data-id=${id}></i>
+      <p class="text ${LINE}">${toDo}</p>
+      <i class="fa fa-trash-o de" job="delete" data-id=${id}></i>
+    </li>`;
+
+    list.insertAdjacentHTML("beforeend", item);
+  }
+
+  // Complete
+  function completeToDo(element) {
+    element.classList.toggle(CHECK);
+    element.classList.toggle(UNCHECK);
+    element.nextElementSibling.classList.toggle(LINE_THROUGH);
+  }
+
+  /* ========= Events ========= */
+
+  // Press enter to add
+  document.addEventListener("keypress", (e) => {
+    if (e.keyCode === 13) {
+      const nameInput = document.querySelector("#input");
+      document.querySelector("#done").value = false;
+      
+      const name = nameInput.value;
+
+      if (name) addToDo(name, false);
+    }
+  });
+
+  // Click to complete or remove
+  list.addEventListener("click", async (e) => {
+    const element = e.target;
+    const { value } = e.target.attributes.job;
+
+    if (value === "delete") {
+      const url = `/${element.dataset.id}`;
+
+      const res = await fetch(url, {
+        method: "DELETE",
+      });
+
+    } else if (value === "complete") {
+      completeToDo(element);
+      const url = `/${element.dataset.id}`;
+
+      const res = await fetch(url, {
+        method: "PATCH"
+      });
+    }
+  });
+
+</script>
