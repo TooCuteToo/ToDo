@@ -14,10 +14,9 @@ function updateToDo(req, res, ToDo) {
 
 function createToDo(req, res, ToDo) {
   const toDo = new ToDo(req.body);
-
   ToDo.findOne({ name: req.body.name }, (err, docs) => {
     if (docs) res.send("Da ton tai");
-    else toDo.save((err, doc) => res.redirect("/"));
+    else toDo.save((err, doc) => res.send(doc));
   });
 }
 

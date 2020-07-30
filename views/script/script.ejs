@@ -1,3 +1,4 @@
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
   // Select elements
   const clear = document.querySelector(".clear");
@@ -61,12 +62,17 @@
   // Press enter to add
   document.addEventListener("keypress", (e) => {
     if (e.keyCode === 13) {
-      const nameInput = document.querySelector("#input");
-      document.querySelector("#done").value = false;
-      
-      const name = nameInput.value;
+      e.preventDefault();
+      const name = document.querySelector("#input").value;
 
-      if (name) addToDo(name, false);
+      document.querySelector("#done").value = false;
+      document.querySelector("#input").value = "";
+      
+      if (name) 
+        axios.post('/', ({name, done: document.querySelector("#done").value})).then(res => {
+          if (res.data !== "Da ton tai")
+            addToDo(name, false, res.data._id);           
+        });
     }
   });
 
@@ -74,21 +80,15 @@
   list.addEventListener("click", async (e) => {
     const element = e.target;
     const { value } = e.target.attributes.job;
+    const url = `/${element.dataset.id}`;
 
     if (value === "delete") {
-      const url = `/${element.dataset.id}`;
-
-      const res = await fetch(url, {
-        method: "DELETE",
-      });
+      element.parentElement.remove();
+      axios.delete(url);
 
     } else if (value === "complete") {
       completeToDo(element);
-      const url = `/${element.dataset.id}`;
-
-      const res = await fetch(url, {
-        method: "PATCH"
-      });
+      axios.patch(url);
     }
   });
 
