@@ -1,11 +1,16 @@
+require('dotenv').config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/route");
 
 const app = express();
 
+const user = process.env.USER_NAME;
+const pass = process.env.PASSWORD;
+
 const connectUrl =
-  "mongodb+srv://Bao2001181020:h3ocojjuh3o@mydata-afvh8.mongodb.net/ToDo?retryWrites=true&w=majority";
+  `mongodb+srv://${user}:${pass}@mydata-afvh8.mongodb.net/ToDo?retryWrites=true&w=majority`;
 
 const options = {
   useUnifiedTopology: true,
