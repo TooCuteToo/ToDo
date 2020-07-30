@@ -22,7 +22,7 @@ mongoose.connect(connectUrl, options)
 const db = mongoose.connection;
 
 db.on("error", (error) => console.log(error));
-db.once("open", () => app.listen(3000));
+db.once("open", () => app.listen(process.env.PORT || 3000));
 
 app.set("view engine", "ejs");
 app.use(express.static("./views"));
