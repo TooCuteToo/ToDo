@@ -1,11 +1,20 @@
-const sanitizeHtml = require('sanitize-html');
+const sanitizeHtml = require("sanitize-html");
+const authentication = ["Basic YmFvOjEyMw==", "Basic bWFuOmgzb2Nvamp1aDNv"];
+
+function protectedApp(req, res, next) {
+  res.set("WWW-Authenticate", "Basic realm='Access to my app'");
+  if (authentication.includes(req.headers.authorization)) next();
+  else res.status(401).send("Authentication failed!!!");
+}
 
 function getToDoList(res, ToDo) {
-  ToDo.find({}, (err, docs) => res.render("index.ejs", {docs}))
+  ToDo.find({}, (err, docs) => res.render("index.ejs", { docs }));
 }
 
 function removeToDo(req, res, ToDo) {
-  ToDo.findOneAndRemove({_id: req.params.id}, (err, docs) => res.json({name: "lala"}));
+  ToDo.findOneAndRemove({ _id: req.params.id }, (err, docs) =>
+    res.json({ name: "lala" })
+  );
 }
 
 function removeAllToDo(req, res, ToDo) {
@@ -13,14 +22,19 @@ function removeAllToDo(req, res, ToDo) {
 }
 
 function updateToDo(req, res, ToDo) {
-  ToDo.findOne({_id: req.params.id}, (err, doc) => {
-    doc.updateOne({done: !doc.done}, (err, doc) => res.status(201).send("Your todo is created"));
+  ToDo.findOne({ _id: req.params.id }, (err, doc) => {
+    doc.updateOne({ done: !doc.done }, (err, doc) =>
+      res.status(201).send("Your todo is created")
+    );
   });
 }
 
 function createToDo(req, res, ToDo) {
-  const cleanName = sanitizeHtml(req.body.name, {allowedTags: [],  allowedAttributes: {}});
-  const toDo = new ToDo({name: cleanName, done: req.body.done});
+  const cleanName = sanitizeHtml(req.body.name, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+  const toDo = new ToDo({ name: cleanName, done: req.body.done });
 
   ToDo.findOne({ name: cleanName }, (err, docs) => {
     if (docs) res.send("Da ton tai");
@@ -29,9 +43,10 @@ function createToDo(req, res, ToDo) {
 }
 
 module.exports = {
+  protectedApp,
   getToDoList,
   removeToDo,
   removeAllToDo,
   updateToDo,
-  createToDo
-}
+  createToDo,
+};
