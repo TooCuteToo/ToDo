@@ -71,13 +71,13 @@
       if (name) 
         axios.post('/', ({name, done: document.querySelector("#done").value})).then(res => {
           if (res.data !== "Da ton tai")
-            addToDo(name, false, res.data._id);           
+            addToDo(res.data.name, false, res.data._id);           
         });
     }
   });
 
   // Click to complete or remove
-  list.addEventListener("click", async (e) => {
+  list.addEventListener("click", (e) => {
     const element = e.target;
     const { value } = e.target.attributes.job;
     const url = `/${element.dataset.id}`;
@@ -91,5 +91,11 @@
       axios.patch(url);
     }
   });
+
+  // Click to clear all to-do
+  clear.addEventListener('click', (e) => {
+    axios.delete('/');
+    list.innerHTML = "";
+  })
 
 </script>

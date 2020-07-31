@@ -1,9 +1,15 @@
+const sanitizeHtml = require('sanitize-html');
+
 function getToDoList(res, ToDo) {
   ToDo.find({}, (err, docs) => res.render("index.ejs", {docs}))
 }
 
 function removeToDo(req, res, ToDo) {
   ToDo.findOneAndRemove({_id: req.params.id}, (err, docs) => res.json({name: "lala"}));
+}
+
+function removeAllToDo(req, res, ToDo) {
+  ToDo.deleteMany({}, (err, docs) => res.send("Your todo is cleared"));
 }
 
 function updateToDo(req, res, ToDo) {
@@ -13,8 +19,10 @@ function updateToDo(req, res, ToDo) {
 }
 
 function createToDo(req, res, ToDo) {
-  const toDo = new ToDo(req.body);
-  ToDo.findOne({ name: req.body.name }, (err, docs) => {
+  const cleanName = sanitizeHtml(req.body.name, {allowedTags: [],  allowedAttributes: {}});
+  const toDo = new ToDo({name: cleanName, done: req.body.done});
+
+  ToDo.findOne({ name: cleanName }, (err, docs) => {
     if (docs) res.send("Da ton tai");
     else toDo.save((err, doc) => res.send(doc));
   });
@@ -23,6 +31,7 @@ function createToDo(req, res, ToDo) {
 module.exports = {
   getToDoList,
   removeToDo,
+  removeAllToDo,
   updateToDo,
   createToDo
 }
