@@ -1,5 +1,5 @@
 const sanitizeHtml = require("sanitize-html");
-const authentication = ["Basic YmFvOjEyMw==", "Basic bWFuOmgzb2Nvamp1aDNv"];
+const authentication = ["Basic YmFvOjEyMw==", "Basic bWFuOmgzb2Nvamp1aDNv", "Basic bWFpOjEyMw=="];
 
 function protectedApp(req, res, next) {
   res.set("WWW-Authenticate", "Basic realm='Access to my app'");
