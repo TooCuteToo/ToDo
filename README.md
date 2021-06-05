@@ -14,6 +14,3 @@ Công nghệ sử dụng:
   * Server (Nodejs).
   * SSR (Server side rendering).
   * View engine (ejs).
-  * Host (Heroku).
- 
-
